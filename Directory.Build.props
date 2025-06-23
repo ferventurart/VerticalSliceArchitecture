@@ -1,0 +1,27 @@
+﻿<Project>
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <!-- Define el framework por defecto -->
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- Usings automáticos -->
+    <Nullable>enable</Nullable>
+    <!-- Análisis de nulls activado -->
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- Reglas de análisis más recientes -->
+    <AnalysisMode>All</AnalysisMode>
+    <!-- Todas las reglas habilitadas -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- No se permite ignorar warnings -->
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <!-- Warnings de análisis también -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <!-- Reglas de estilo aplicadas en la compilación -->
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">
+    <PackageReference Include="SonarAnalyzer.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>
