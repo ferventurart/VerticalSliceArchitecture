@@ -1,4 +1,4 @@
-﻿namespace Web.Api.Features.Common;
+﻿namespace Web.Api.Features.Customers.Common;
 
 public record CustomerDto(string Id,
         string FirstName,
