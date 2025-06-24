@@ -5,7 +5,9 @@ using Web.Api.Extensions;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.AddApiServices()
-       .AddDatabase();
+       .AddDatabase()
+       .AddApplicationServices()
+       .AddErrorHandling();
 
 WebApplication app = builder.Build();
 
@@ -16,6 +18,9 @@ if (app.Environment.IsDevelopment())
     await app.ApplyMigrationsAsync();
 }
 
+app.UseExceptionHandler();
 app.UseHttpsRedirection();
+
+app.MapEndpoints();
 
 await app.RunAsync();
