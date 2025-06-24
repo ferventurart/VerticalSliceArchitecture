@@ -12,7 +12,7 @@ using Web.Api.Database;
 namespace Web.Api.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250624002352_InitialMigration")]
+    [Migration("20250624002753_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -28,7 +28,8 @@ namespace Web.Api.Database.Migrations
             modelBuilder.Entity("Web.Api.Entities.Customer", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("text")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("id");
 
                     b.Property<DateOnly?>("BirthDate")
@@ -37,34 +38,49 @@ namespace Web.Api.Database.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("email");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("first_name");
 
                     b.Property<string>("IdentificationNumber")
-                        .HasColumnType("text")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
                         .HasColumnName("identification_number");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("last_name");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(9)
+                        .HasColumnType("character varying(9)")
                         .HasColumnName("phone_number");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("integer")
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)")
                         .HasColumnName("status");
 
                     b.HasKey("Id")
                         .HasName("pk_customers");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Customers_Email");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasDatabaseName("IX_Customers_PhoneNumber");
 
                     b.ToTable("customers", (string)null);
                 });
