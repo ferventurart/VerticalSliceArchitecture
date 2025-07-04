@@ -12,7 +12,8 @@ public static class GetCustomer
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
             app.MapGet("customers/{customerId}", Handler)
-               .WithTags("Customers")
+               .RequireAuthorization()
+               .WithTags(Tags.Customers)
                .Produces<CustomerDto>()
                .ProducesProblem(StatusCodes.Status404NotFound);
         }

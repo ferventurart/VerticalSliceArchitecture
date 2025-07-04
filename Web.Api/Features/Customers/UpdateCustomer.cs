@@ -5,18 +5,19 @@ using Web.Api.Extensions;
 
 namespace Web.Api.Features.Customers;
 
-public static class CreateCustomer
+public static class UpdateCustomer
 {
-    public record CreateCustomerRequest(
-        string FirstName,
-        string LastName,
-        string Email,
-        string? IdentificationNumber,
-        DateOnly? BirthDate,
-        string PhoneNumber);
+    public record UpdateCustomerRequest(
+       string FirstName,
+       string LastName,
+       string Email,
+       string? IdentificationNumber,
+       DateOnly? BirthDate,
+       string PhoneNumber,
+       CustomerStatus Status);
 
 
-    public sealed class Validator : AbstractValidator<CreateCustomerRequest>
+    public sealed class Validator : AbstractValidator<UpdateCustomerRequest>
     {
         public Validator()
         {
@@ -45,6 +46,9 @@ public static class CreateCustomer
                 .NotEmpty()
                 .Matches(@"^\d{4}-\d{4}$")
                 .MaximumLength(9);
+
+            RuleFor(r => r.Status)
+                .IsInEnum();
         }
     }
 
@@ -52,32 +56,30 @@ public static class CreateCustomer
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("customers", Handler)
+            app.MapPut("customers/{customerId}", Handler)
                 .RequireAuthorization()
                 .WithTags(Tags.Customers);
         }
     }
 
     public static async Task<IResult> Handler(
-        CreateCustomerRequest request,
+        string customerId,
+        UpdateCustomerRequest request,
         ApplicationDbContext context,
-        IValidator<CreateCustomerRequest> validator)
+        IValidator<UpdateCustomerRequest> validator)
     {
+        Customer? customer = await context.Customers.FindAsync(customerId);
+
+        if(customer is null)
+        {
+            return Results.NotFound(customerId);
+        }
+
         await validator.ValidateAndThrowAsync(request);
 
-        var customer = new Customer
-        {
-            Id = Customer.NewId(),
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            PhoneNumber = request.PhoneNumber,
-            IdentificationNumber = request.IdentificationNumber,
-            BirthDate = request.BirthDate,
-            Status = CustomerStatus.Active
-        };
+        customer = request.ToEntity(customer);
 
-        context.Customers.Add(customer);
+        context.Customers.Update(customer);
 
         await context.SaveChangesAsync();
 

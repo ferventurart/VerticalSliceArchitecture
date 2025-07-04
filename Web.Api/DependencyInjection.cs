@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Identity.Web;
 using Web.Api.Database;
 using Web.Api.Extensions;
 using Web.Api.Middlewares;
@@ -55,6 +56,15 @@ public static class DependencyInjection
                     npgsqlOptions => npgsqlOptions
                         .MigrationsHistoryTable(HistoryRepository.DefaultTableName))
                 .UseSnakeCaseNamingConvention());
+
+        return builder;
+    }
+    public static WebApplicationBuilder AddAuthorization(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddAuthentication("Bearer")
+            .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+        builder.Services.AddAuthentication();
 
         return builder;
     }

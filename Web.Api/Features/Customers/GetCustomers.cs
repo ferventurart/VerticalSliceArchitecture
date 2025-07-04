@@ -14,7 +14,9 @@ public static class GetCustomers
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("customers", Handler).WithTags("Customers");
+            app.MapGet("customers", Handler)
+                .RequireAuthorization()
+                .WithTags(Tags.Customers);
         }
     }
 
@@ -25,7 +27,9 @@ public static class GetCustomers
     {
         await validator.ValidateAndThrowAsync(request);
 
-        IQueryable<Customer> query = context.Customers.AsQueryable();
+        IQueryable<Customer> query = context.Customers
+            .OrderBy(o => o.FirstName)
+            .AsQueryable();
 
         PaginationResult<Customer> paginationResult = await PaginationResult<Customer>.CreateAsync(
             query, 
