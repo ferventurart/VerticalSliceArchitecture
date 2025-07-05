@@ -9,7 +9,7 @@ internal static class ProductMapping
     {
         return new ProductDto(
             product.Id,
-            product.ProductCategory!.Name,
+            product.ProductCategoryId,
             product.Name,
             product.Description,
             product.Price,

@@ -25,6 +25,10 @@ internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product>
                .IsRequired()
                .HasMaxLength(200);
 
+        builder.HasIndex(p => p.Name)
+               .IsUnique()
+               .HasDatabaseName("IX_Products_Name");
+
         builder.Property(p => p.Description)
                .HasMaxLength(500);
 

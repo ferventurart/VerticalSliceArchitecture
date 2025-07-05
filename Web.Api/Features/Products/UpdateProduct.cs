@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Web.Api.Database;
 using Web.Api.Entities;
 using Web.Api.Extensions;
@@ -21,11 +22,16 @@ public static class UpdateProduct
 
     public sealed class Validator : AbstractValidator<UpdateProductRequest>
     {
-        public Validator()
+        public Validator(ApplicationDbContext context)
         {
             RuleFor(r => r.ProductCategoryId)
                 .NotEmpty()
-                .MaximumLength(500);
+                .MaximumLength(500)
+                 .MustAsync(async (id, cancellation) =>
+                    await context.ProductCategories
+                                 .AsNoTracking()
+                                 .AnyAsync(pc => pc.Id == id, cancellation)
+                ).WithMessage("There is no category with the Id '{PropertyValue}'.");
 
             RuleFor(r => r.Name)
                 .NotEmpty()

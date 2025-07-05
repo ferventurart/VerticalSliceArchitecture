@@ -2,7 +2,7 @@
 
 public record ProductDto(
     string Id,
-    string Category,
+    string ProductCategoryId,
     string Name,
     string? Description,
     decimal Price,
