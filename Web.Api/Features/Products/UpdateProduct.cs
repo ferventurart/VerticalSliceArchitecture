@@ -82,4 +82,5 @@ public static class UpdateProduct
 
             return Results.NoContent();
         }
+    }
 }
