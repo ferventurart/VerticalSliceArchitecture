@@ -1,23 +1,22 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 using Web.Api.Common.Dtos;
 using Web.Api.Database;
 using Web.Api.Entities;
 using Web.Api.Extensions;
-using Web.Api.Features.Customers.Common;
+using Web.Api.Features.Products.Common;
 
-namespace Web.Api.Features.Customers;
+namespace Web.Api.Features.Products;
 
-public static class GetCustomers
+public static class GetProducts
 {
     public sealed class Endpoint : IEndpoint
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapGet("customers", Handler)
+            app.MapGet("products", Handler)
                 .RequireAuthorization()
-                .Produces<PaginationResult<CustomerDto>>()
-                .WithTags(Tags.Customers);
+                .Produces<PaginationResult<ProductDto>>()
+                .WithTags(Tags.Products);
         }
     }
 
@@ -28,16 +27,16 @@ public static class GetCustomers
     {
         await validator.ValidateAndThrowAsync(request);
 
-        IQueryable<Customer> query = context.Customers
-            .OrderBy(o => o.FirstName)
+        IQueryable<Product> query = context.Products
+            .OrderBy(o => o.Name)
             .AsQueryable();
 
-        PaginationResult<Customer> paginationResult = await PaginationResult<Customer>.CreateAsync(
-            query, 
-            request.Page, 
+        PaginationResult<Product> paginationResult = await PaginationResult<Product>.CreateAsync(
+            query,
+            request.Page,
             request.PageSize);
 
-        var paginationResponse = new PaginationResult<CustomerDto>()
+        var paginationResponse = new PaginationResult<ProductDto>()
         {
             Items = paginationResult.Items.Select(s => s.ToDto()).ToList(),
             Page = paginationResult.Page,

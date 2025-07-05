@@ -2,6 +2,7 @@
 using Web.Api.Database;
 using Web.Api.Entities;
 using Web.Api.Extensions;
+using Web.Api.Features.Customers.Common;
 
 namespace Web.Api.Features.Customers;
 

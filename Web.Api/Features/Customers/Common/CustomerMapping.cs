@@ -1,8 +1,7 @@
 ﻿using Web.Api.Entities;
-using Web.Api.Features.Customers.Common;
 using static Web.Api.Features.Customers.UpdateCustomer;
 
-namespace Web.Api.Features.Customers;
+namespace Web.Api.Features.Customers.Common;
 internal static class CustomerMapping
 {
     public static CustomerDto ToDto(this Customer customer)

@@ -36,7 +36,7 @@ public static class DatabaseExtensions
             if (!await applicationDbContext.Customers.AnyAsync())
             {
 
-                Faker<Customer> faker = new Faker<Customer>()
+                Faker<Customer> customerFaker = new Faker<Customer>()
                     .RuleFor(p => p.Id, s => Customer.NewId())
                     .RuleFor(p => p.FirstName, s => s.Name.FirstName())
                     .RuleFor(p => p.LastName, s => s.Name.LastName())
@@ -46,12 +46,23 @@ public static class DatabaseExtensions
                     .RuleFor(p => p.Status, s => s.PickRandom<CustomerStatus>())
                     .RuleFor(p => p.BirthDate, s => s.Date.PastDateOnly());
 
-                List<Customer> customers = faker.Generate(500);
+                List<Customer> customers = customerFaker.Generate(500);
 
-                await applicationDbContext.AddRangeAsync(customers);
-
-                await applicationDbContext.SaveChangesAsync();
+                await applicationDbContext.Customers.AddRangeAsync(customers);
             }
+
+            if(!await applicationDbContext.ProductCategories.AnyAsync())
+            {
+                Faker<ProductCategory> productCategoryFaker = new Faker<ProductCategory>()
+                   .RuleFor(p => p.Id, s => ProductCategory.NewId())
+                   .RuleFor(p => p.Name, s => s.Commerce.Categories(1)[0]);
+
+                List<ProductCategory> productCategories = productCategoryFaker.Generate(6);
+
+                await applicationDbContext.ProductCategories.AddRangeAsync(productCategories);
+            }
+
+            await applicationDbContext.SaveChangesAsync();
 
             app.Logger.LogInformation("Application database seeds applied successfully.");
         }

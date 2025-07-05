@@ -2,6 +2,7 @@
 using Web.Api.Database;
 using Web.Api.Entities;
 using Web.Api.Extensions;
+using Web.Api.Features.Customers.Common;
 
 namespace Web.Api.Features.Customers;
 
@@ -58,6 +59,7 @@ public static class UpdateCustomer
         {
             app.MapPut("customers/{customerId}", Handler)
                 .RequireAuthorization()
+                .ProducesProblem(StatusCodes.Status404NotFound)
                 .WithTags(Tags.Customers);
         }
     }
@@ -83,6 +85,6 @@ public static class UpdateCustomer
 
         await context.SaveChangesAsync();
 
-        return Results.Created($"/customers/{customer.Id}", customer.ToDto());
+        return Results.NoContent();
     }
 }

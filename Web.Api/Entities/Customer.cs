@@ -2,14 +2,14 @@
 
 public sealed class Customer
 {
-    public string Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Email { get; set; }
+    public required string Id { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
+    public required string Email { get; set; }
     public string? IdentificationNumber { get; set; }
     public DateOnly? BirthDate { get; set; }
-    public string PhoneNumber { get; set; }
-    public CustomerStatus Status { get; set; }
+    public required string PhoneNumber { get; set; }
+    public required CustomerStatus Status { get; set; }
     public static string NewId() => $"c_{Guid.CreateVersion7()}";
 }
 
