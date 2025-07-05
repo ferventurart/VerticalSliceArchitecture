@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Web.Api.Database;
 using Web.Api.Entities;
 using Web.Api.Extensions;
@@ -50,12 +51,13 @@ public static class CreateProduct
         {
             app.MapPost("products", Handler)
                 .RequireAuthorization()
+                .DisableAntiforgery()
                 .WithTags(Tags.Products);
         }
     }
 
     public static async Task<IResult> Handler(
-        CreateProductRequest request,
+        [FromForm] CreateProductRequest request,
         ApplicationDbContext context,
         IValidator<CreateProductRequest> validator)
     {

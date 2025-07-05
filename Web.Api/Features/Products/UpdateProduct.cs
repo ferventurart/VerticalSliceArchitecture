@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Web.Api.Database;
 using Web.Api.Entities;
 using Web.Api.Extensions;
@@ -53,6 +54,7 @@ public static class UpdateProduct
         {
             app.MapPut("products/{productId}", Handler)
                 .RequireAuthorization()
+                .DisableAntiforgery()
                 .ProducesProblem(StatusCodes.Status404NotFound)
                 .WithTags(Tags.Products);
         }
@@ -60,27 +62,25 @@ public static class UpdateProduct
 
     public static async Task<IResult> Handler(
         string productId,
-        UpdateProductRequest request,
+        [FromForm] UpdateProductRequest request,
         ApplicationDbContext context,
         IValidator<UpdateProductRequest> validator)
     {
+        Product? product = await context.Products.FindAsync(productId);
+
+        if (product is null)
         {
-            Product? product = await context.Products.FindAsync(productId);
-
-            if (product is null)
-            {
-                return Results.NotFound(productId);
-            }
-
-            await validator.ValidateAndThrowAsync(request);
-
-            product = request.ToEntity(product);
-
-            context.Products.Update(product);
-
-            await context.SaveChangesAsync();
-
-            return Results.NoContent();
+            return Results.NotFound(productId);
         }
+
+        await validator.ValidateAndThrowAsync(request);
+
+        product = request.ToEntity(product);
+
+        context.Products.Update(product);
+
+        await context.SaveChangesAsync();
+
+        return Results.NoContent();
     }
 }
